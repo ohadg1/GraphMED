@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Contact Us</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--===============================================================================================-->
+    {% load staticfiles %}
+    <link rel="stylesheet" type="text/css"
+          href="{% static 'HomeScreen/forExternalTemlates/vendor/bootstrap/css/bootstrap.min.css' %}">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css"
+          href="{% static 'HomeScreen/forExternalTemlates/fonts/font-awesome-4.7.0/css/font-awesome.min.css' %}">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css"
+          href="{% static 'HomeScreen/forExternalTemlates/vendor/animate/animate.css' %}">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css"
+          href="{% static 'HomeScreen/forExternalTemlates/vendor/css-hamburgers/hamburgers.min.css' %}">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css"
+          href="{% static 'HomeScreen/forExternalTemlates/vendor/animsition/css/animsition.min.css' %}">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css"
+          href="{% static 'HomeScreen/forExternalTemlates/vendor/select2/select2.min.css' %}">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css"
+          href="{% static 'HomeScreen/forExternalTemlates/vendor/daterangepicker/daterangepicker.css' %}">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="{% static 'HomeScreen/forExternalTemlates/css/util.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'HomeScreen/forExternalTemlates/css/mainLogin.css' %}">
+    <!--===============================================================================================-->
+
+</head>
+
+<body>
+
+<div class="limiter">
+    <div class="container-login100">
+        <div class="wrap-login100">
+            <form class="login100-form p-l-55 p-r-55 p-t-178" id="Contact_Form" method="post" enctype="text/plain"
+                  action="mailto:graphmed@gmail.com?subject=We need help!>
+                {% csrf_token %}
+                <span class=" login100-form-title">
+            Contact Us
+            </span>
+
+            <div class="wrap-input100 validate-input m-b-16" data-validate="Please enter a title">
+                <input required class="input100" type="text" id="title" name="title" placeholder="Title"><br>
+                <span class="focus-input100"></span>
+            </div>
+
+            <div class="wrap-input100 validate-input m-b-16" data-validate="Please enter email: e@a.x">
+                <input class="input100" type="email" id="mail" name="email" placeholder="Email"><br>
+                <span class="focus-input100"></span>
+            </div>
+
+            <div class="wrap-input100 validate-input" data-validate="Please enter your message">
+                    <textarea required class="input100" id="msg" name="message" placeholder="Your Message"
+                              style="resize: vertical"></textarea>
+                <span class="focus-input100"></span>
+            </div>
+            <div class="container-login100-form-btn">
+                <button id="send" type="submit" class="login100-form-btn" onclick="">
+                    Send Email
+                </button>
+            </div>
+            </form>
+            <div class="write100-more">
+                <a href="../homePage">
+                    <button style="font-size: 20px; font-family: FontAwesome">Cancel</button>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!--===============================================================================================-->
+<script src="{% static 'HomeScreen/forExternalTemlates/vendor/../../../ResearchProject/static/ResearchProject/forExternalTemlates/js/jquery/jquery-3.2.1.min.js' %}"></script>
+<!--===============================================================================================-->
+<script src="{% static 'HomeScreen/forExternalTemlates/vendor/animsition/js/animsition.min.js' %}"></script>
+<!--===============================================================================================-->
+<script src="{% static 'HomeScreen/forExternalTemlates/vendor/bootstrap/js/popper.js' %}"></script>
+<script src="{% static 'HomeScreen/forExternalTemlates/vendor/bootstrap/js/bootstrap.min.js' %}"></script>
+<!--===============================================================================================-->
+<script src="{% static 'HomeScreen/forExternalTemlates/vendor/select2/select2.min.js' %}"></script>
+<!--===============================================================================================-->
+<script src="{% static 'HomeScreen/forExternalTemlates/vendor/daterangepicker/moment.min.js' %}"></script>
+<script src="{% static 'HomeScreen/forExternalTemlates/vendor/daterangepicker/daterangepicker.js' %}"></script>
+<!--===============================================================================================-->
+<script src="{% static 'HomeScreen/forExternalTemlates/vendor/countdowntime/countdowntime.js' %}"></script>
+<!--===============================================================================================-->
+<script src="{% static 'HomeScreen/forExternalTemlates/js/main.js' %}"></script>
+
+</body>
+</html>

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load staticfiles %}
+    <link rel="stylesheet" type="text/css" href="{% static 'HomeScreen/css/ProfileBase.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'HomeScreen/css/topNavBar.css' %}">
+
+    <style>
+        /* Left column */
+        .leftcolumn {
+            float: left;
+            width: 65%;
+        }
+
+        /* Right column */
+        .rightcolumn {
+            float: left;
+            width: 35%;
+            background-color: #f1f1f1;
+            padding-left: 20px;
+        }
+
+        /* Add a card effect for articles */
+        .card {
+            background-color: white;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        /*Image Container */
+        .container {
+            position: relative;
+            width: 100%;
+            max-width: 550px;
+        }
+
+        .container img {
+            width: 100%;
+            height: auto;
+        }
+
+        .button a:link, a:visited {
+            background-color: #595959;
+            color: white;
+            padding: 50px 25px;
+            text-align: center;
+            text-decoration: none;
+            display: block;
+            margin: 67px 100px;
+            cursor: pointer;
+            width: 250px;
+            border-radius: 8px;
+            opacity: 0.6;
+        }
+
+        .button a:active, a:hover {
+            background-color: #262626;
+            opacity: 1;
+        }
+
+        /* Clear floats after the columns */
+        .row:after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+
+        /* Responsive layout - when the screen is less than 800px wide, make the two columns stack on top of each other instead of next to each other */
+        @media screen and (max-width: 800px) {
+            .leftcolumn, .rightcolumn {
+                width: 100%;
+                padding: 0;
+            }
+        }
+    </style>
+    <title>
+        GraphMED
+    </title>
+</head>
+<body>
+
+<div class="title">
+    <h1>GraphMED</h1>
+</div>
+
+<div class="topnav">
+    <a href="aboutUs">About</a>
+    <a href="contactUs">Contact</a>
+    <a href="logout" style="float:right">Logout</a>
+</div>
+
+<div class="row">
+    <div class="leftcolumn">
+        <div class="card">
+            <h2>Hello {{ request.user.first_name }}, </h2>
+            <h5 id="curDate"></h5>
+            <div class="container">
+                <img src="{% static 'HomeScreen/forExternalTemlates/images/hospital-medical-tech.jpg' %}"
+                     alt="graphmed image" style="width:100%">
+            </div>
+        </div>
+    </div>
+    <div class="rightcolumn">
+        <div class="card">
+            <div class="button">
+                <a href="createProject" target="_self">Create Project</a>
+            </div>
+            <div class="button">
+                <a href="openProject" target="_self">Open project</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById("curDate").innerHTML = (new Date).toDateString();
+</script>
+
+
+</body>
+</html>

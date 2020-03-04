@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Open Project</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--===============================================================================================-->
+    {% load staticfiles %}
+    <link rel="stylesheet" type="text/css"
+          href="{% static 'HomeScreen/forExternalTemlates/vendor/bootstrap/css/bootstrap.min.css' %}">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css"
+          href="{% static 'HomeScreen/forExternalTemlates/fonts/font-awesome-4.7.0/css/font-awesome.min.css' %}">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css"
+          href="{% static 'HomeScreen/forExternalTemlates/vendor/animate/animate.css' %}">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css"
+          href="{% static 'HomeScreen/forExternalTemlates/vendor/css-hamburgers/hamburgers.min.css' %}">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css"
+          href="{% static 'HomeScreen/forExternalTemlates/vendor/animsition/css/animsition.min.css' %}">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css"
+          href="{% static 'HomeScreen/forExternalTemlates/vendor/select2/select2.min.css' %}">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css"
+          href="{% static 'HomeScreen/forExternalTemlates/vendor/daterangepicker/daterangepicker.css' %}">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="{% static 'HomeScreen/forExternalTemlates/css/util.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'HomeScreen/forExternalTemlates/css/mainLogin.css' %}">
+    <!--===============================================================================================-->
+
+
+</head>
+
+<body>
+
+<div class="limiter" style="width: 100%">
+    <div class="container-login100" style="width: 100%">
+        <div class="wrap-login100" style="width: 100%">
+            <div class="login100-form p-l-55 p-r-55 p-t-178" id="OpenProject_Form" style="width: 100%">
+
+                {% csrf_token %}
+                <span class="login100-form-title">
+						Open Project
+                </span>
+                <div>
+                    <table width="100%" text-align="center">
+                        {% if projects %}
+                            <tr>
+                                <th align="left">
+                                    Project name
+                                </th>
+                                <th align="left">
+                                    Project Description
+                                </th>
+                                <th align="left">
+                                    Last modified
+                                </th>
+                                <th>
+                                </th>
+                                <th>
+                                </th>
+                            </tr>
+                            {% for project in projects %}
+                                <tr>
+                                    <td>
+                                        {{ project.name }}
+                                    </td>
+                                    <td>
+                                        {{ project.description }}
+                                    </td>
+                                    <td>
+                                        {{ project.last_modified }}
+                                    </td>
+                                    <td>
+                                        <form action="/workBench/openProject" method="post">
+                                            {% csrf_token %}
+
+                                            <button id="open" name="project_name" type="submit"
+                                                    class="login100-form-btn"
+                                                    value="{{ project.name }}">
+                                                Open
+                                            </button>
+                                        </form>
+                                    </td>
+                                    <td>
+                                        <form action="workBench/deleteProject" method="post">
+                                            {% csrf_token %}
+
+                                            <button id="delete" name="project_name" type="submit"
+                                                    class="login100-form-btn"
+                                                    value="{{ project.name }}">
+                                                Delete
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><br></td>
+                                </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td>
+                                    No projects are available.
+                                </td>
+                            </tr>
+                        {% endif %}
+                    </table>
+                </div>
+            </div>
+            <div class="write100-more">
+                <footer>
+                    <br>
+                    <form action="../homePage" method="post">
+                        {% csrf_token %}
+                        <button style="font-size: 20px; font-family: FontAwesome">Cancel</button>
+                    </form>
+                </footer>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!--===============================================================================================-->
+<script src="{% static 'HomeScreen/forExternalTemlates/vendor/../../../ResearchProject/static/ResearchProject/forExternalTemlates/js/jquery/jquery-3.2.1.min.js' %}"></script>
+<!--===============================================================================================-->
+<script src="{% static 'HomeScreen/forExternalTemlates/vendor/animsition/js/animsition.min.js' %}"></script>
+<!--===============================================================================================-->
+<script src="{% static 'HomeScreen/forExternalTemlates/vendor/bootstrap/js/popper.js' %}"></script>
+<script src="{% static 'HomeScreen/forExternalTemlates/vendor/bootstrap/js/bootstrap.min.js' %}"></script>
+<!--===============================================================================================-->
+<script src="{% static 'HomeScreen/forExternalTemlates/vendor/select2/select2.min.js' %}"></script>
+<!--===============================================================================================-->
+<script src="{% static 'HomeScreen/forExternalTemlates/vendor/daterangepicker/moment.min.js' %}"></script>
+<script src="{% static 'HomeScreen/forExternalTemlates/vendor/daterangepicker/daterangepicker.js' %}"></script>
+<!--===============================================================================================-->
+<script src="{% static 'HomeScreen/forExternalTemlates/vendor/countdowntime/countdowntime.js' %}"></script>
+<!--===============================================================================================-->
+<script src="{% static 'HomeScreen/forExternalTemlates/js/main.js' %}"></script>
+
+</body>
+</html>

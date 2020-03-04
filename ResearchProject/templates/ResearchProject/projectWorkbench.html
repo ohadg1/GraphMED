@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    {% load staticfiles %}
+    <title>{{ project_name }} project</title>
+
+    <!-- Include for the network  -->
+    <link href="{% static 'ResearchProject/vis-4.21.0/dist/vis-network.min.css' %}" rel="stylesheet" type="text/css"/>
+    <script type="text/javascript" src="{% static 'ResearchProject/vis-4.21.0/dist/vis.js' %}"></script>
+    <script type="text/javascript" src="{% static 'ResearchProject/js/Network.js' %}"></script>
+
+
+    <!-- Include for the Nav-Bar-->
+    <script type="text/javascript" src="{% static 'ResearchProject/js/sideNavBar.js' %}"></script>
+
+    <!-- Include for jquery-->
+    <script type="text/javascript"
+            src="{% static 'ResearchProject/forExternalTemlates/js/jquery/jquery-3.4.1.js' %}"></script>
+
+    <!--Some CSS files -->
+    <link rel="stylesheet" type="text/css" href="{% static 'ResearchProject/css/sideNavBar.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'ResearchProject/css/topNavBar.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'ResearchProject/css/columns.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'ResearchProject/css/styles.css' %}">
+
+
+    <!--Our scripts -->
+    <script name="ourMethods" type="text/javascript">
+
+        //This code copied from django's website
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = cookies[i].trim();
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        function saveProjectHttpRequest() {
+            console.log("on Save()"); //debug
+
+            //Create xhttp request
+            var xhttp = new XMLHttpRequest();
+
+            //add CRSF Token to the request (async)
+            xhttp.open("POST", "storeProject", true); //method, url, async
+            xhttp.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+
+            //Add relevant data to the request
+            var dict_data = {};
+            dict_data['project_name'] = '{{ project_name }}';
+
+            var list_nets = [];
+            for (key in networks_dict) {
+                var tuple = [key, JSON.stringify(networks_dict[key].nodes.get()), JSON.stringify(networks_dict[key].edges.get())];
+                list_nets.push(tuple);
+                console.log("Save network " + key);
+                console.log(networks_dict[key].nodes.get());
+                console.log(networks_dict[key].edges.get());
+                console.log("---------------------");
+
+            }
+            dict_data["networks"] = list_nets;
+
+            //Make the request - there is no reason to wait
+            xhttp.send(JSON.stringify(dict_data));
+        }
+
+        function changeCurrentNetRequest(src, dest, article) {
+            console.log(src); //debug
+            console.log(dest); // debug
+
+            //Create xhttp request
+            var xhttp = new XMLHttpRequest();
+
+            //Add CSRF Token to the request
+            xhttp.open('POST', 'newNetRequest', true); //method, url, async
+            xhttp.setRequestHeader('X-CSRFToken', getCookie('csrftoken'));
+
+            //Send request (Async)
+            var data = [src, dest];
+            xhttp.send(JSON.stringify(data));
+
+            // Create an event that handle the response
+            xhttp.onreadystatechange = function () {
+                //Check state indeed changed to DONE (Means we got response from the server)
+                if (xhttp.readyState === XMLHttpRequest.DONE) {
+
+                    //Retrieve theresponsee from the server (parse it as JSON)
+                    var response = JSON.parse(xhttp.response);
+                    console.log(response); //debug
+
+                    //Verify there is a net to change (current net is not null)
+                    if (current_network_name != null) {
+
+                        //Chenge the current net
+                        networks_dict[current_network_name].nodes = new vis.DataSet(response.nodes);
+                        networks_dict[current_network_name].edges = new vis.DataSet(response.edges);
+
+                        //Load new net
+                        loadNetwork(current_network_name, article);
+                    }
+                }
+            }
+        }//End function
+    </script>
+
+
+    <!--PopUp elements -->
+    <div id="node-popUp">
+        <span id="node-operation">node</span> <br>
+        <table style="margin:auto;padding: 10px">
+            <tr>
+                <td>name</td>
+                <td><input required style="width: 150px" id="node-name" value="new value"/></td>
+            </tr>
+            <tr>
+                <td>color</td>
+                <td><input id="node-color" style="width: 150px" type="color" name="favcolor" value="#99c2ff"></td>
+            </tr>
+        </table>
+        <input type="button" value="save" id="node-saveButton"/>
+        <input type="button" value="cancel" id="node-cancelButton"/>
+    </div>
+
+    <div id="edge-popUp">
+        <span id="edge-operation">edge</span> <br>
+        <table style="margin:auto;padding: 10px">
+            <tr>
+                <td>label</td>
+                <td><input id="edge-label" value="new value"/></td>
+            </tr>
+            <tr>
+                <td>color</td>
+                <td><input id="edge-color" style="width: 150px" type="color" name="favcolor"></td>
+            </tr>
+        </table>
+        <input type="button" value="save" id="edge-saveButton"/>
+        <input type="button" value="cancel" id="edge-cancelButton"/>
+    </div>
+
+</head>
+
+<body>
+{% csrf_token %}
+
+<!-- Main elements -->
+<div id="main">
+
+    <!--Caption -->
+    <div class="header">
+        <span style="font-size:20px;cursor:pointer" onclick="naviBar.openNav()">&#9776;</span>
+        <div class="title">
+            <h1> {{ project_name }}</h1>
+        </div>
+    </div>
+
+    <!--Top Navi Bar -->
+    <div class="topnav">
+        <a href="#" onclick="saveProjectHttpRequest()">Save</a>
+        <a style="float: right; color: red" href="../homePage">Exit Project</a>
+    </div>
+
+    <!-- Cards (The body of the screen) -->
+    <div id="cards" class="row">
+        <div class="column left">
+            <div class="card">
+                <div class="has_network">
+                    <div id="changeSrcAndDest_form">
+                        <p style="margin-bottom: 0px; width: 100%">source:</p>
+                        <input type="text" id="change_src"/>
+                        <p style="margin-bottom: 0px; width: 100%">destination:</p>
+                        <input type="text" id="change_dst"/>
+                        <p style="margin-bottom: 0px; white-space: nowrap;">article lower bound:</p>
+                        <input type="number" id="article_min_num" min="0" value="0"/>
+                        <p style="margin-bottom: 0px; white-space: nowrap;">edge importance:</p>
+                        <input type="number" id="edge_min_grade" value="0" readonly/>
+
+                        <button class="button" type="button" id="Change" onclick="
+                                    if (confirm('Are you sure?')){
+                                        var src_val = document.getElementById('change_src').value;
+                                        var dest_val = document.getElementById('change_dst').value;
+                                        var article_val = document.getElementById('article_min_num').value;
+                                        changeCurrentNetRequest(src_val,dest_val, article_val);
+                                        return true;
+                                    }
+                                    return false;">Change!
+                        </button>
+                        <button class="button" type="button" id="Clean" onclick="
+                                    if (confirm('Are you sure you want to clean the graph?')){
+                                        //Reser net
+                                        networks_dict[current_network_name].nodes = new vis.DataSet([]);
+                                        networks_dict[current_network_name].edges = new vis.DataSet([]);
+
+                                        //Load new net
+                                        loadNetwork(current_network_name, '0');
+                                    };">Clean Graph
+                        </button>
+
+                        <p></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="column middle">
+            <div class="card">
+                <div class="has_network">
+                    <h1 align="center" style="font-size: 25px" id="network_name"></h1>
+                    <div id="mynetwork"></div>
+                </div>
+                <div class="no_networks">
+                    <h1 style="font-size: 30px">Welcome to your new project!</h1>
+                    <p>You can use the navigation bar on the left in order to create and delete networks</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="column right">
+            <div class="scroll_card" id="eventSpan">
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--SideNaviBar Elements -->
+<div id="mySidenav" class="sidenav">
+    <a class="closebtn" onclick="naviBar.closeNav();">&times;</a>
+    <div>
+        <a id="add_network_herf" href="#" style="font-size: 50px; color: #00f201; float: left" onclick="
+                var input_network_name = prompt('Enter network name', 'title');
+                if (input_network_name == null){
+                    return;
+                }
+                //Create new empty network
+                if (add_network(input_network_name)) {
+                    //Add network to the naviBar
+                    naviBar.addElement(input_network_name);
+
+                    //Load network to change the current network to it
+                    loadNetwork(input_network_name, '0');
+                }
+                else {
+                    alert('Name is already used');
+                }">+</a>
+
+        <a id="delete_network_herf" href="#" style="font-size: 50px; color: #f20400; float: right; margin-right: 20px"
+           onclick="
+                var tmp_name=current_network_name;
+                if( current_network_name != null && delete_network(current_network_name)){
+                    SideNaviBar.deleteElement(tmp_name);
+                }">-</a>
+
+    </div>
+    <div id="mySidenav_items" style="margin-top: 70px"></div>
+
+</div>
+
+<!-- Script that run on page loading -->
+<script id="initScript">
+    // Parsing Data from the Server:
+    {% for network_name, nodes_as_json, edges_as_json in networks %}
+
+        if (current_network_name == null) {
+            current_network_name = "{{ network_name }}";
+        }
+
+        var nodes_list = JSON.parse('{{ nodes_as_json|escapejs}}');
+        var edges_list = JSON.parse('{{ edges_as_json|escapejs }}');
+        networks_dict["{{ network_name }}"] = new NetworkClass(nodes_list, edges_list);
+
+    {% endfor %}
+
+    $(document).ready(function () {
+        $(".has_network").hide();
+        $(".no_networks").show();
+        naviBar = new SideNaviBar("mySidenav", "mySidenav_items", networks_dict);
+        if (current_network_name != null) {
+            loadNetwork(current_network_name, "0");
+        }
+
+    });
+
+
+</script>
+
+</body>
+
+
+</html>
